@@ -1,25 +1,24 @@
 internal fun main() {
-    val master = Project(1, "Super Project", "<html><body>Hello World</body></html>")
-    println(master)
-
-    val masterClone1 = master.myCopyImpl()
-    val masterClone2 = ProjectFactory(master).cloneProject()
-    println(masterClone1)
-    println(masterClone2)
+    val webProjectPrototype = WebProject(1, "Super Project", "<html><body>Hello World</body></html>")
+    val webProjectClone = ProjectFactory(webProjectPrototype).makeProject()
+    println(webProjectClone)
 }
 
 internal class ProjectFactory(
     private val project: Project
 ) {
-    fun cloneProject(): Project {
-        return project.myCopyImpl() as Project
+    fun makeProject(): Project {
+        return project.myCopyImpl() as WebProject
     }
 }
 
-internal data class Project(
-    val id: Int,
-    val name: String,
-    val code: String
+/**
+ * Prototype class.
+ */
+internal open class Project(
+    private val id: Int,
+    private val name: String,
+    private val code: String
 ) : MyCopyable {
 
     override fun myCopyImpl(): Any {
@@ -27,6 +26,20 @@ internal data class Project(
     }
 }
 
+/**
+ * Concrete Prototypes to clone.
+ */
+internal class WebProject(
+    id: Int,
+    name: String,
+    code: String
+) : Project(id, name, code)
+
+internal class BankProject(
+    id: Int,
+    name: String,
+    code: String
+) : Project(id, name, code)
 
 internal interface MyCopyable {
     fun myCopyImpl(): Any
